@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-02T00:00:00+03:00",
+  "title": "Design System: MNU Student Management System",
+  "extensions": {
+    "colorMeta": {
+      "primary-blue": {
+        "role": "primary",
+        "displayName": "Command Blue",
+        "canonical": "#2563eb",
+        "tonalRamp": ["#172554", "#1e3a8a", "#1e40af", "#1d4ed8", "#2563eb", "#3b82f6", "#93c5fd", "#dbeafe"]
+      },
+      "primary-blue-soft": {
+        "role": "primary",
+        "displayName": "Command Blue Wash",
+        "canonical": "#eff6ff",
+        "tonalRamp": ["#172554", "#1e3a8a", "#1e40af", "#2563eb", "#60a5fa", "#93c5fd", "#dbeafe", "#eff6ff"]
+      },
+      "primary-blue-strong": {
+        "role": "primary",
+        "displayName": "Deep Command Blue",
+        "canonical": "#1e40af",
+        "tonalRamp": ["#172554", "#1e3a8a", "#1e40af", "#1d4ed8", "#2563eb", "#60a5fa", "#bfdbfe", "#eff6ff"]
+      },
+      "institutional-surface": {
+        "role": "neutral",
+        "displayName": "Institutional Canvas",
+        "canonical": "#f9fafb",
+        "tonalRamp": ["#111827", "#1f2937", "#374151", "#6b7280", "#9ca3af", "#d1d5db", "#f3f4f6", "#f9fafb"]
+      },
+      "content-surface": {
+        "role": "neutral",
+        "displayName": "Record Surface",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#111827", "#1f2937", "#374151", "#6b7280", "#d1d5db", "#e5e7eb", "#f9fafb", "#ffffff"]
+      },
+      "text-strong": {
+        "role": "neutral",
+        "displayName": "Ink Text",
+        "canonical": "#111827",
+        "tonalRamp": ["#030712", "#111827", "#1f2937", "#374151", "#4b5563", "#9ca3af", "#e5e7eb", "#f9fafb"]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Muted Text",
+        "canonical": "#6b7280",
+        "tonalRamp": ["#111827", "#1f2937", "#374151", "#4b5563", "#6b7280", "#9ca3af", "#d1d5db", "#f3f4f6"]
+      },
+      "border-subtle": {
+        "role": "neutral",
+        "displayName": "Subtle Rule",
+        "canonical": "#e5e7eb",
+        "tonalRamp": ["#111827", "#374151", "#6b7280", "#9ca3af", "#d1d5db", "#e5e7eb", "#f3f4f6", "#f9fafb"]
+      },
+      "success": {
+        "role": "tertiary",
+        "displayName": "Progress Green",
+        "canonical": "#16a34a",
+        "tonalRamp": ["#052e16", "#14532d", "#166534", "#15803d", "#16a34a", "#22c55e", "#86efac", "#dcfce7"]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Attention Amber",
+        "canonical": "#d97706",
+        "tonalRamp": ["#451a03", "#78350f", "#92400e", "#b45309", "#d97706", "#f59e0b", "#fcd34d", "#fffbeb"]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Critical Red",
+        "canonical": "#dc2626",
+        "tonalRamp": ["#450a0a", "#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#fca5a5", "#fef2f2"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page titles and highest-level dashboard headings." },
+      "headline": { "displayName": "Headline", "purpose": "Transcript titles, student names, and important content headers." },
+      "title": { "displayName": "Title", "purpose": "Modal titles, section headings, and card titles." },
+      "body": { "displayName": "Body", "purpose": "Forms, tables, descriptions, values, and standard UI text." },
+      "label": { "displayName": "Label", "purpose": "Badges, table headers, metadata, and compact field labels." }
+    },
+    "shadows": [
+      { "name": "surface-low", "value": "0 1px 3px 0 rgb(0 0 0 / 0.1)", "purpose": "Standard dashboard cards and stat panels." },
+      { "name": "surface-raised", "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "purpose": "Inline content panels and form containers." },
+      { "name": "overlay-high", "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)", "purpose": "Modals and blocking overlays." },
+      { "name": "toast-high", "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)", "purpose": "Temporary feedback notifications." }
+    ],
+    "motion": [
+      { "name": "state-fast", "value": "150ms ease-out", "purpose": "Overlay fade and small feedback transitions." },
+      { "name": "state-standard", "value": "200ms ease-out", "purpose": "Modal content, toast, sidebar, and transform transitions." },
+      { "name": "search-debounce", "value": "300ms", "purpose": "Debounced student search input." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The default action button for creating records, saving forms, and exporting PDFs.",
+      "html": "<button class=\"ds-btn-primary\">Create Student</button>",
+      "css": ".ds-btn-primary { background: var(--color-primary, #2563eb); color: #ffffff; padding: 0.5rem 1rem; border: 0; border-radius: 0.5rem; font: 600 0.875rem/1.5 Inter, system-ui, sans-serif; transition: background-color 200ms ease-out, transform 150ms ease-out; } .ds-btn-primary:hover { background: var(--color-primary-dark, #1e40af); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-ring, #2563eb); outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "The quiet action button for cancel, print, pagination, and neutral secondary operations.",
+      "html": "<button class=\"ds-btn-secondary\">Cancel</button>",
+      "css": ".ds-btn-secondary { background: #ffffff; color: #374151; padding: 0.5rem 1rem; border: 1px solid var(--color-border, #e5e7eb); border-radius: 0.5rem; font: 600 0.875rem/1.5 Inter, system-ui, sans-serif; transition: background-color 200ms ease-out, color 200ms ease-out, transform 150ms ease-out; } .ds-btn-secondary:hover { background: var(--color-secondary-light, #f9fafb); } .ds-btn-secondary:active { transform: scale(0.98); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--color-ring, #2563eb); outline-offset: 2px; }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Student search input with leading icon and visible focus ring.",
+      "html": "<label class=\"ds-search\"><svg class=\"ds-search-icon\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\" /></svg><input class=\"ds-search-input\" placeholder=\"Search students\" /></label>",
+      "css": ".ds-search { position: relative; display: block; width: 18rem; } .ds-search-icon { position: absolute; inset-inline-start: 0.75rem; top: 50%; width: 1rem; height: 1rem; transform: translateY(-50%); color: var(--color-muted-foreground, #6b7280); pointer-events: none; } .ds-search-input { width: 100%; padding: 0.5rem 0.75rem; padding-inline-start: 2.25rem; border: 1px solid var(--color-input, #e5e7eb); border-radius: 0.5rem; color: #111827; font: 400 0.875rem/1.5 Inter, system-ui, sans-serif; } .ds-search-input:focus { outline: 0; box-shadow: 0 0 0 2px var(--color-ring, #2563eb); }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge-primary",
+      "description": "Compact semantic status label for roles, records, and academic states.",
+      "html": "<span class=\"ds-badge ds-badge-success\"><span class=\"ds-badge-dot\"></span>Active</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 0.375rem; border-radius: 9999px; padding: 0.125rem 0.75rem; font: 600 0.75rem/1.5 Inter, system-ui, sans-serif; } .ds-badge-success { background: var(--color-success-light, #f0fdf4); color: var(--color-success, #16a34a); } .ds-badge-dot { width: 0.5rem; height: 0.5rem; border-radius: 9999px; background: currentColor; }"
+    },
+    {
+      "name": "Dashboard Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Standard statistic or content card for dashboard summaries.",
+      "html": "<section class=\"ds-card\"><p class=\"ds-card-label\">Total Students</p><p class=\"ds-card-value\">1,248</p></section>",
+      "css": ".ds-card { background: var(--color-card, #ffffff); color: #111827; border: 1px solid var(--color-border, #e5e7eb); border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1); } .ds-card-label { margin: 0; color: var(--color-muted-foreground, #6b7280); font: 500 0.875rem/1.5 Inter, system-ui, sans-serif; } .ds-card-value { margin: 0.25rem 0 0; color: #111827; font: 700 1.5rem/1.25 Inter, system-ui, sans-serif; }"
+    },
+    {
+      "name": "Data Table",
+      "kind": "custom",
+      "refersTo": "table",
+      "description": "Dense academic record table with sortable headers, alternating rows, and clickable row hover.",
+      "html": "<div class=\"ds-table-wrap\"><table class=\"ds-table\"><thead><tr><th>Student</th><th>ID</th><th>Status</th></tr></thead><tbody><tr><td>Ahmed Ali</td><td>2024001</td><td><span class=\"ds-table-pill\">Active</span></td></tr><tr><td>Mariam Hassan</td><td>2024002</td><td><span class=\"ds-table-pill\">Active</span></td></tr></tbody></table></div>",
+      "css": ".ds-table-wrap { overflow-x: auto; border: 1px solid var(--color-border, #e5e7eb); border-radius: 0.5rem; background: #ffffff; } .ds-table { width: 100%; border-collapse: collapse; font: 400 0.875rem/1.5 Inter, system-ui, sans-serif; color: #111827; } .ds-table th { padding: 0.75rem 1rem; text-align: start; background: var(--color-secondary-light, #f9fafb); color: var(--color-muted-foreground, #6b7280); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; } .ds-table td { padding: 0.75rem 1rem; border-top: 1px solid var(--color-border, #e5e7eb); } .ds-table tbody tr:nth-child(even) { background: rgba(249, 250, 251, 0.5); } .ds-table tbody tr:hover { background: var(--color-primary-light, #eff6ff); } .ds-table-pill { display: inline-flex; border-radius: 9999px; padding: 0.125rem 0.75rem; background: #f0fdf4; color: #16a34a; font-size: 0.75rem; font-weight: 600; }"
+    },
+    {
+      "name": "Sidebar Navigation Item",
+      "kind": "nav",
+      "refersTo": "navigation-sidebar-item",
+      "description": "Role-aware navigation item with active selection and neutral hover.",
+      "html": "<a class=\"ds-nav-item ds-nav-active\" href=\"#\"><svg class=\"ds-nav-icon\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3\" /></svg>Dashboard</a>",
+      "css": ".ds-nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.625rem 0.75rem; border-radius: 0.5rem; color: #4b5563; font: 600 0.875rem/1.5 Inter, system-ui, sans-serif; text-decoration: none; transition: background-color 200ms ease-out, color 200ms ease-out; } .ds-nav-item:hover { background: #f9fafb; color: #111827; } .ds-nav-active { background: #eff6ff; color: #1d4ed8; } .ds-nav-icon { width: 1.25rem; height: 1.25rem; flex: none; }"
+    },
+    {
+      "name": "Transcript Header",
+      "kind": "custom",
+      "refersTo": "transcript-header",
+      "description": "Official academic transcript masthead with university identity and primary blue authority.",
+      "html": "<header class=\"ds-transcript-header\"><div class=\"ds-transcript-logo\">MNU</div><h1>Minya National University</h1><p>Official Academic Transcript</p></header>",
+      "css": ".ds-transcript-header { background: var(--color-primary, #2563eb); color: #ffffff; padding: 1.5rem 2rem; text-align: center; font-family: Inter, system-ui, sans-serif; } .ds-transcript-logo { display: inline-flex; align-items: center; justify-content: center; width: 4rem; height: 4rem; margin-bottom: 0.5rem; border-radius: 9999px; background: #ffffff; color: #2563eb; font-weight: 800; } .ds-transcript-header h1 { margin: 0; font-size: 1.25rem; line-height: 1.3; font-weight: 700; } .ds-transcript-header p { margin: 0.25rem 0 0; font-size: 0.875rem; opacity: 0.9; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Academic Control Room",
+    "overview": "The interface is an operational academic control room: calm enough for long administrative sessions, premium enough to carry university authority, and dynamic enough to make academic progress feel alive. It serves admins, student affairs staff, and students with the same discipline: make status, records, and next actions visible without burying users in ERP density.\n\nThe current visual system is a restrained product UI built from Inter, cool blue primary actions, pale gray work surfaces, white content panels, compact tables, pill badges, and short state transitions. The design direction should keep that operational familiarity while sharpening the premium feel through contrast, rhythm, bilingual layout discipline, and color-blind-safe status treatment.\n\nIt explicitly rejects the anti-references in PRODUCT.md: a dense legacy ERP, a generic AI-generated Bootstrap template, a boring or childish academic portal, cheapness, and clutter.",
+    "keyCharacteristics": [
+      "Premium through precision, not ornament.",
+      "Dynamic through state, progress, and motion feedback, not decorative choreography.",
+      "Efficient through predictable navigation, compact tables, and low-friction forms.",
+      "Bilingual by construction, with RTL/LTR layout parity treated as a core component requirement.",
+      "High contrast with semantic redundancy so grades, attendance, and risk states are never color-only."
+    ],
+    "rules": [
+      { "name": "The Status Redundancy Rule", "body": "Critical academic data must never rely on color alone. Pair semantic color with text, icon, label, position, or shape.", "section": "colors" },
+      { "name": "The Accent Scarcity Rule", "body": "Command Blue is for action, selection, focus, and official emphasis. Do not use it as page decoration.", "section": "colors" },
+      { "name": "The Dark Mode Contract", "body": "Any dark mode must preserve WCAG AA contrast and keep semantic states distinct for color-blind users before it is considered complete.", "section": "colors" },
+      { "name": "The Data First Rule", "body": "Tables, forms, and transcripts use compact type and clear weight shifts. Do not introduce display styling into labels, buttons, or data cells.", "section": "typography" },
+      { "name": "The Bilingual Fit Rule", "body": "Arabic and English labels must be tested in the same components. Do not shrink type until Arabic fits; adjust layout, wrapping, and alignment first.", "section": "typography" },
+      { "name": "The Official Paper Rule", "body": "Transcript and record surfaces should feel like official paper inside software: bordered, stable, printable, and never glassy.", "section": "elevation" },
+      { "name": "The Flat Until Needed Rule", "body": "Default surfaces are bordered and tonal. Add shadow only when stack order, hover feedback, or overlay hierarchy needs it.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep the product register clear: app shell, side navigation, sticky header, compact forms, and predictable tables.",
+      "Do preserve the premium, dynamic, efficient personality through spacing precision, responsive feedback, and low cognitive load.",
+      "Do support full Arabic/English switching with layout mirroring, logical alignment, mirrored icons where directional, and tested table overflow in both directions.",
+      "Do meet WCAG AA contrast across light and dark themes.",
+      "Do pair all critical status colors with text, icons, labels, or shape.",
+      "Do keep Command Blue reserved for action, selection, focus, and official emphasis.",
+      "Do use skeletons or structured loading states for content areas when possible, especially tables and dashboards."
+    ],
+    "donts": [
+      "Don't make this feel like a dense legacy ERP.",
+      "Don't make this feel like a generic AI-generated Bootstrap template.",
+      "Don't make this feel like a boring or childish academic portal.",
+      "Don't make the interface feel cheap or cluttered.",
+      "Don't add decorative effects that make records, grades, attendance, reports, or transcripts harder to scan.",
+      "Don't use color alone to communicate grade, attendance, status, risk, success, or error.",
+      "Don't add colored side-stripe borders, gradient text, decorative glassmorphism, hero-metric templates, or repeated identical card grids.",
+      "Don't introduce inconsistent button, input, badge, or table styling between admin, student affairs, and student surfaces."
+    ]
+  }
+}
