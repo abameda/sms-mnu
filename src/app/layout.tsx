@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MNU — Student Management System",
     description:
-      "The official Student Management System of Minya National University. Manage grades, attendance, and transcripts securely in one place.",
+      "The official Student Management System of Minya National University. Manage grades, attendance, and transcripts securely in one place. Made by Abdelhmeed Elshorbagy.",
     siteName: "MNU Student Management System",
     type: "website",
     locale: "en_US",
