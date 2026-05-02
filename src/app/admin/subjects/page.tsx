@@ -2,28 +2,17 @@
 
 /* eslint-disable react-hooks/set-state-in-effect */
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import DataTable from "@/components/DataTable";
 import Modal from "@/components/Modal";
 import { useToast } from "@/components/Toast";
 
 interface Subject {
-  id: number;
-  name: string;
-  code: string;
-  credits: number;
-  semester: number;
-  year: number;
-  department_id: number;
-  department_name: string;
-  department_code: string;
+  id: number; name: string; code: string; credits: number;
+  semester: number; year: number; department_id: number;
+  department_name: string; department_code: string;
 }
-
-interface Department {
-  id: number;
-  name: string;
-  code: string;
-}
+interface Department { id: number; name: string; code: string; }
 
 export default function AdminSubjectsPage() {
   const { addToast } = useToast();
@@ -32,14 +21,7 @@ export default function AdminSubjectsPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [filters, setFilters] = useState({ department_id: "", semester: "", year: "" });
-  const [form, setForm] = useState({
-    name: "",
-    code: "",
-    credits: 3,
-    semester: 1,
-    year: 1,
-    department_id: "",
-  });
+  const [form, setForm] = useState({ name: "", code: "", credits: 3, semester: 1, year: 1, department_id: "" });
   const [submitting, setSubmitting] = useState(false);
 
   const fetchSubjects = async () => {
@@ -49,242 +31,151 @@ export default function AdminSubjectsPage() {
       if (filters.department_id) params.set("department_id", filters.department_id);
       if (filters.semester) params.set("semester", filters.semester);
       if (filters.year) params.set("year", filters.year);
-      const res = await fetch(`/api/subjects?${params}`);
-      const json = await res.json();
-      if (json.success) setSubjects(json.data);
-    } catch {
-      addToast("Failed to fetch subjects", "error");
-    } finally {
-      setLoading(false);
-    }
+      const j = await fetch(`/api/subjects?${params}`).then(r => r.json());
+      if (j.success) setSubjects(j.data);
+    } catch { addToast("Failed to fetch subjects", "error"); }
+    finally { setLoading(false); }
   };
 
   useEffect(() => {
-    fetch("/api/departments")
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.success) setDepartments(json.data);
-      });
+    fetch("/api/departments").then(r => r.json()).then(j => { if (j.success) setDepartments(j.data); });
   }, []);
 
-  useEffect(() => {
-    fetchSubjects();
-  }, [filters]);
+  useEffect(() => { fetchSubjects(); }, [filters]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const res = await fetch("/api/subjects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          department_id: Number(form.department_id),
-          credits: Number(form.credits),
-          semester: Number(form.semester),
-          year: Number(form.year),
-        }),
-      });
-      const json = await res.json();
-      if (json.success) {
-        addToast("Subject created successfully", "success");
+      const j = await fetch("/api/subjects", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, department_id: Number(form.department_id), credits: Number(form.credits), semester: Number(form.semester), year: Number(form.year) }),
+      }).then(r => r.json());
+      if (j.success) {
+        addToast("Subject created", "success");
         setShowModal(false);
         setForm({ name: "", code: "", credits: 3, semester: 1, year: 1, department_id: "" });
         fetchSubjects();
-      } else {
-        addToast(json.error || "Failed to create subject", "error");
-      }
-    } catch {
-      addToast("Failed to create subject", "error");
-    } finally {
-      setSubmitting(false);
-    }
+      } else addToast(j.error || "Failed", "error");
+    } catch { addToast("Failed to create subject", "error"); }
+    finally { setSubmitting(false); }
   };
 
   const columns = [
-    { key: "code", label: "Code" },
-    { key: "name", label: "Name" },
-    { key: "credits", label: "Credits" },
-    { key: "department_name", label: "Department" },
-    { key: "semester", label: "Semester" },
-    { key: "year", label: "Year" },
+    { key: "code", label: "Code" }, { key: "name", label: "Name" },
+    { key: "credits", label: "Credits" }, { key: "department_name", label: "Department" },
+    { key: "semester", label: "Semester" }, { key: "year", label: "Year" },
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Subjects</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage course subjects</p>
-        </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          Add Subject
-        </button>
-      </div>
+    <>
+      <div className="dashboard-glow-bg" aria-hidden="true" />
+      <div style={{ display:"flex", flexDirection:"column", gap:"2rem", position:"relative", zIndex:1 }}>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-        <div className="flex flex-wrap gap-4">
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">Department</label>
-            <select
-              value={filters.department_id}
-              onChange={(e) => setFilters({ ...filters, department_id: e.target.value })}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            >
-              <option value="">All Departments</option>
-              {departments.map((d) => (
-                <option key={d.id} value={d.id}>{d.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">Semester</label>
-            <select
-              value={filters.semester}
-              onChange={(e) => setFilters({ ...filters, semester: e.target.value })}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            >
-              <option value="">All Semesters</option>
-              <option value="1">Semester 1</option>
-              <option value="2">Semester 2</option>
-              <option value="3">Semester 3</option>
-              <option value="4">Semester 4</option>
-              <option value="5">Semester 5</option>
-              <option value="6">Semester 6</option>
-              <option value="7">Semester 7</option>
-              <option value="8">Semester 8</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1">Year</label>
-            <select
-              value={filters.year}
-              onChange={(e) => setFilters({ ...filters, year: e.target.value })}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            >
-              <option value="">All Years</option>
-              <option value="1">Year 1</option>
-              <option value="2">Year 2</option>
-              <option value="3">Year 3</option>
-              <option value="4">Year 4</option>
-            </select>
+        <div className="page-header" style={{ display:"flex", flexDirection:"column", gap:"0.25rem" }}>
+          <p style={{ fontSize:"0.6875rem", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:"var(--muted-foreground)" }}>Curriculum</p>
+          <div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between", flexWrap:"wrap", gap:"1rem" }}>
+            <h1 style={{ fontSize:"2rem", fontWeight:800, color:"var(--foreground)", lineHeight:1.15, letterSpacing:"-0.03em" }}>Subjects</h1>
+            <button onClick={() => setShowModal(true)} className="btn-primary-cta" style={{ display:"inline-flex", alignItems:"center", gap:"0.375rem", borderRadius:"0.5rem", background:"var(--color-primary)", color:"var(--color-primary-foreground)", padding:"0.5rem 1.125rem", fontSize:"0.8125rem", fontWeight:700, border:"none", cursor:"pointer" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              Add Subject
+            </button>
           </div>
         </div>
-      </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-        {loading ? (
-          <div className="p-8 text-center text-gray-500">Loading...</div>
-        ) : subjects.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">No subjects found.</div>
-        ) : (
-          <DataTable columns={columns} data={subjects} onRowClick={() => {}} />
-        )}
+        {/* Filters */}
+        <div className="glass-card section-card" style={{ "--delay":"80ms", padding:"1.25rem 1.5rem" } as React.CSSProperties}>
+          <div className="filter-bar">
+            <div>
+              <label className="form-label" htmlFor="filter-dept">Department</label>
+              <select id="filter-dept" value={filters.department_id} onChange={e => setFilters({...filters, department_id: e.target.value})} className="form-select" style={{ width:"auto", minWidth:"160px" }}>
+                <option value="">All Departments</option>
+                {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="form-label" htmlFor="filter-sem">Semester</label>
+              <select id="filter-sem" value={filters.semester} onChange={e => setFilters({...filters, semester: e.target.value})} className="form-select" style={{ width:"auto", minWidth:"130px" }}>
+                <option value="">All Semesters</option>
+                {[1,2,3,4,5,6,7,8].map(s => <option key={s} value={s}>Semester {s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="form-label" htmlFor="filter-year">Year</label>
+              <select id="filter-year" value={filters.year} onChange={e => setFilters({...filters, year: e.target.value})} className="form-select" style={{ width:"auto", minWidth:"110px" }}>
+                <option value="">All Years</option>
+                {[1,2,3,4].map(y => <option key={y} value={y}>Year {y}</option>)}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="glass-card section-card" style={{ "--delay":"160ms", overflow:"hidden", padding:0 } as React.CSSProperties}>
+          {loading ? (
+            <div style={{ padding:"3rem 2rem", display:"flex", flexDirection:"column", gap:"0.75rem" }}>
+              {[...Array(5)].map((_, i) => <div key={i} className="skeleton-line" style={{ width:`${60+i*7}%`, animationDelay:`${i*70}ms` }} />)}
+            </div>
+          ) : subjects.length === 0 ? (
+            <div className="empty-state">
+              <svg className="empty-state-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+              <p className="empty-state-title">No subjects found</p>
+              <p className="empty-state-body">Create a subject or adjust your filters.</p>
+            </div>
+          ) : (
+            <DataTable columns={columns} data={subjects} onRowClick={() => {}} />
+          )}
+        </div>
+
       </div>
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Add Subject">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} style={{ display:"flex", flexDirection:"column", gap:"1.25rem" }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              placeholder="e.g. Data Structures"
-            />
+            <label className="form-label" htmlFor="sub-name">Name</label>
+            <input id="sub-name" type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required className="form-input" placeholder="e.g. Data Structures" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Code</label>
-            <input
-              type="text"
-              value={form.code}
-              onChange={(e) => setForm({ ...form, code: e.target.value })}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              placeholder="e.g. CS201"
-            />
+            <label className="form-label" htmlFor="sub-code">Code</label>
+            <input id="sub-code" type="text" value={form.code} onChange={e => setForm({...form, code: e.target.value})} required className="form-input" placeholder="e.g. CS201" />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem" }}>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Credits</label>
-              <input
-                type="number"
-                value={form.credits}
-                onChange={(e) => setForm({ ...form, credits: Number(e.target.value) })}
-                min={1}
-                max={6}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              />
+              <label className="form-label" htmlFor="sub-credits">Credits</label>
+              <input id="sub-credits" type="number" value={form.credits} onChange={e => setForm({...form, credits: Number(e.target.value)})} min={1} max={6} required className="form-input" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-              <select
-                value={form.department_id}
-                onChange={(e) => setForm({ ...form, department_id: e.target.value })}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              >
-                <option value="">Select Department</option>
-                {departments.map((d) => (
-                  <option key={d.id} value={d.id}>{d.name}</option>
-                ))}
+              <label className="form-label" htmlFor="sub-dept">Department</label>
+              <select id="sub-dept" value={form.department_id} onChange={e => setForm({...form, department_id: e.target.value})} required className="form-select">
+                <option value="">Select</option>
+                {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem" }}>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Semester</label>
-              <select
-                value={form.semester}
-                onChange={(e) => setForm({ ...form, semester: Number(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
-                  <option key={s} value={s}>Semester {s}</option>
-                ))}
+              <label className="form-label" htmlFor="sub-sem">Semester</label>
+              <select id="sub-sem" value={form.semester} onChange={e => setForm({...form, semester: Number(e.target.value)})} className="form-select">
+                {[1,2,3,4,5,6,7,8].map(s => <option key={s} value={s}>Semester {s}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
-              <select
-                value={form.year}
-                onChange={(e) => setForm({ ...form, year: Number(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              >
-                {[1, 2, 3, 4].map((y) => (
-                  <option key={y} value={y}>Year {y}</option>
-                ))}
+              <label className="form-label" htmlFor="sub-year">Year</label>
+              <select id="sub-year" value={form.year} onChange={e => setForm({...form, year: Number(e.target.value)})} className="form-select">
+                {[1,2,3,4].map(y => <option key={y} value={y}>Year {y}</option>)}
               </select>
             </div>
           </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <button
-              type="button"
-              onClick={() => setShowModal(false)}
-              className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition-colors"
-            >
+          <div style={{ display:"flex", justifyContent:"flex-end", gap:"0.5rem", paddingTop:"0.5rem" }}>
+            <button type="button" onClick={() => setShowModal(false)} className="btn-ghost-cta" style={{ padding:"0.5rem 1rem", fontSize:"0.8125rem", fontWeight:600, border:"1px solid var(--border)", borderRadius:"0.5rem", background:"var(--card)", color:"var(--foreground)", cursor:"pointer" }}>Cancel</button>
+            <button type="submit" disabled={submitting} className="btn-primary-cta" style={{ padding:"0.5rem 1.125rem", fontSize:"0.8125rem", fontWeight:700, borderRadius:"0.5rem", background:"var(--color-primary)", color:"var(--color-primary-foreground)", border:"none", cursor:"pointer", opacity: submitting ? 0.6 : 1 }}>
               {submitting ? "Creating..." : "Create Subject"}
             </button>
           </div>
         </form>
       </Modal>
-    </div>
+    </>
   );
 }

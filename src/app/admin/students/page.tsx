@@ -84,68 +84,142 @@ export default function AdminStudentsPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Students</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage student records</p>
-        </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          Add New Student
-        </button>
-      </div>
+    <>
+      <div className="dashboard-glow-bg" aria-hidden="true" />
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-        {loading ? (
-          <div className="p-8 text-center text-gray-500">Loading...</div>
-        ) : students.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            No students found. Add your first student!
+      <div style={{ display: "flex", flexDirection: "column", gap: "2rem", position: "relative", zIndex: 1 }}>
+
+        {/* ── Page header ── */}
+        <div className="page-header" style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+          <p style={{
+            fontSize: "0.6875rem",
+            fontWeight: 700,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "var(--muted-foreground)",
+          }}>
+            Academic records
+          </p>
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
+            <h1 style={{
+              fontSize: "2rem",
+              fontWeight: 800,
+              color: "var(--foreground)",
+              lineHeight: 1.15,
+              letterSpacing: "-0.03em",
+            }}>
+              Students
+            </h1>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="btn-primary-cta"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.375rem",
+                borderRadius: "0.5rem",
+                background: "var(--color-primary)",
+                color: "var(--color-primary-foreground)",
+                padding: "0.5rem 1.125rem",
+                fontSize: "0.8125rem",
+                fontWeight: 700,
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              Add Student
+            </button>
           </div>
-        ) : (
-          <>
-            <DataTable
-              columns={columns}
-              data={students}
-              onRowClick={(row) => router.push(`/admin/students/${row.id}`)}
-            />
-            <div className="flex items-center justify-between p-4 border-t border-gray-200">
-              <p className="text-sm text-gray-500">
-                Showing {students.length} of {pagination.total} students
-              </p>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => fetchStudents(pagination.page - 1)}
-                  disabled={pagination.page <= 1}
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Previous
-                </button>
-                <span className="px-3 py-1.5 text-sm text-gray-600">
-                  Page {pagination.page} of {pagination.totalPages}
-                </span>
-                <button
-                  onClick={() => fetchStudents(pagination.page + 1)}
-                  disabled={pagination.page >= pagination.totalPages}
-                  className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Next
-                </button>
-              </div>
+        </div>
+
+        {/* ── Students surface ── */}
+        <div
+          className="glass-card section-card"
+          style={{ "--delay": "120ms", overflow: "hidden", padding: 0 } as React.CSSProperties}
+        >
+          {loading ? (
+            <div style={{ padding: "3rem 2rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="skeleton-line" style={{ width: `${75 + Math.random() * 20}%`, animationDelay: `${i * 80}ms` }} />
+              ))}
             </div>
-          </>
-        )}
+          ) : students.length === 0 ? (
+            <div className="empty-state">
+              <svg className="empty-state-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <p className="empty-state-title">No students yet</p>
+              <p className="empty-state-body">Add the first student to get started tracking academic records.</p>
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="btn-primary-cta"
+                style={{
+                  marginTop: "0.25rem",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.375rem",
+                  padding: "0.4375rem 1rem",
+                  borderRadius: "0.5rem",
+                  background: "var(--color-primary)",
+                  color: "var(--color-primary-foreground)",
+                  fontSize: "0.8125rem",
+                  fontWeight: 700,
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Add Student
+              </button>
+            </div>
+          ) : (
+            <>
+              <DataTable
+                columns={columns}
+                data={students}
+                onRowClick={(row) => router.push(`/admin/students/${row.id}`)}
+              />
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "0.875rem 1.25rem",
+                borderTop: "1px solid var(--border)",
+              }}>
+                <p style={{ fontSize: "0.8125rem", color: "var(--muted-foreground)" }}>
+                  {students.length} of {pagination.total} students
+                </p>
+                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                  <button
+                    onClick={() => fetchStudents(pagination.page - 1)}
+                    disabled={pagination.page <= 1}
+                    className="page-btn"
+                  >
+                    Previous
+                  </button>
+                  <span style={{ fontSize: "0.8125rem", color: "var(--muted-foreground)", padding: "0 0.5rem" }}>
+                    {pagination.page} / {pagination.totalPages}
+                  </span>
+                  <button
+                    onClick={() => fetchStudents(pagination.page + 1)}
+                    disabled={pagination.page >= pagination.totalPages}
+                    className="page-btn"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
       </div>
 
       <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="Add New Student">
         <StudentForm onSubmit={handleAddStudent} isEditing={false} />
       </Modal>
-    </div>
+    </>
   );
 }

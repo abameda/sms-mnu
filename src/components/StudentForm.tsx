@@ -144,7 +144,7 @@ export default function StudentForm({ initialData, onSubmit, isEditing = false }
           <select
             value={form.department_id}
             onChange={(e) => handleChange("department_id", Number(e.target.value))}
-            className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-white ${errors.department_id ? "border-danger" : "border-input"}`}
+            className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-card ${errors.department_id ? "border-danger" : "border-input"}`}
           >
             <option value={0}>Select department</option>
             {departments.map((dept) => (
@@ -163,7 +163,7 @@ export default function StudentForm({ initialData, onSubmit, isEditing = false }
           <select
             value={form.year}
             onChange={(e) => handleChange("year", Number(e.target.value))}
-            className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-white"
+            className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-card"
           >
             {[1, 2, 3, 4].map((y) => (
               <option key={y} value={y}>
@@ -193,7 +193,7 @@ export default function StudentForm({ initialData, onSubmit, isEditing = false }
           <select
             value={form.status}
             onChange={(e) => handleChange("status", e.target.value)}
-            className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-white"
+            className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-card"
           >
             <option value="active">Active</option>
             <option value="graduated">Graduated</option>
@@ -206,7 +206,7 @@ export default function StudentForm({ initialData, onSubmit, isEditing = false }
         <button
           type="button"
           onClick={() => window.history.back()}
-          className="px-4 py-2 text-sm font-medium text-secondary-700 bg-white border border-border rounded-lg hover:bg-secondary-50 transition-colors"
+          className="px-4 py-2 text-sm font-medium text-secondary-700 bg-card border border-border rounded-lg hover:bg-muted transition-colors"
         >
           Cancel
         </button>

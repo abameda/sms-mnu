@@ -16,114 +16,162 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
-      const result = await signIn("credentials", {
-        username,
-        password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setError("Invalid username or password");
-        setLoading(false);
-        return;
-      }
-
-      const res = await fetch("/api/auth/session");
-      const session = await res.json();
+      const result = await signIn("credentials", { username, password, redirect: false });
+      if (result?.error) { setError("Invalid username or password"); setLoading(false); return; }
+      const session = await fetch("/api/auth/session").then(r => r.json());
       const role = session?.user?.role;
-
-      if (role === "admin" || role === "student_affairs") {
-        router.push("/admin/dashboard");
-      } else if (role === "student") {
-        router.push("/student/dashboard");
-      } else {
-        router.push("/");
-      }
-    } catch {
-      setError("An error occurred. Please try again.");
-      setLoading(false);
-    }
+      if (role === "admin" || role === "student_affairs") router.push("/admin/dashboard");
+      else if (role === "student") router.push("/student/dashboard");
+      else router.push("/");
+    } catch { setError("An error occurred. Please try again."); setLoading(false); }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <div className="text-center mb-8">
-            <Image
-              src="/mnu-logo.png"
-              alt="Minya National University"
-              width={76}
-              height={76}
-              className="mx-auto mb-4 rounded-2xl object-contain"
-              priority
+    <div style={{
+      minHeight:"100vh",
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center",
+      background:"var(--background)",
+      position:"relative",
+      overflow:"hidden",
+      padding:"1.5rem",
+    }}>
+      {/* Ambient glow */}
+      <div className="dashboard-glow-bg" aria-hidden="true" />
+
+      {/* Login card */}
+      <div style={{
+        position:"relative",
+        zIndex:1,
+        width:"100%",
+        maxWidth:"24rem",
+        background:"oklch(0.195 0.008 220 / 0.75)",
+        backdropFilter:"blur(24px) saturate(1.5)",
+        WebkitBackdropFilter:"blur(24px) saturate(1.5)",
+        border:"1px solid oklch(0.38 0.010 220 / 0.7)",
+        borderRadius:"1.25rem",
+        padding:"2.5rem 2rem",
+        boxShadow:"0 0 0 1px oklch(0.50 0.010 220 / 0.08) inset, 0 24px 64px oklch(0.05 0.005 220 / 0.6)",
+      }}>
+
+        {/* Header */}
+        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:"1rem", marginBottom:"2rem" }}>
+          <div style={{
+            width:"4.5rem", height:"4.5rem",
+            borderRadius:"1rem",
+            background:"oklch(0.26 0.09 175)",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            boxShadow:"0 4px 16px oklch(0.26 0.09 175 / 0.4)",
+            overflow:"hidden",
+          }}>
+            <Image src="/mnu-logo.png" alt="Minya National University" width={60} height={60} style={{ objectFit:"contain" }} priority />
+          </div>
+          <div style={{ textAlign:"center" }}>
+            <p style={{ fontSize:"0.6875rem", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:"var(--muted-foreground)" }}>
+              Minya National University
+            </p>
+            <h1 style={{ fontSize:"1.375rem", fontWeight:800, color:"var(--foreground)", lineHeight:1.2, letterSpacing:"-0.025em", marginTop:"0.25rem" }}>
+              Student Management
+            </h1>
+          </div>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ display:"flex", flexDirection:"column", gap:"1.125rem" }}>
+          {error && (
+            <div className="error-surface" role="alert">
+              <div style={{ display:"flex", alignItems:"flex-start", gap:"0.5rem" }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink:0, marginTop:"0.125rem" }}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>{error}</span>
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label className="form-label" htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              required
+              autoComplete="username"
+              className="form-input"
+              placeholder="Enter your username"
             />
-            <h1 className="text-2xl font-bold text-gray-900">Student Management System</h1>
-            <p className="text-gray-500 mt-1">Minya National University</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                {error}
-              </div>
+          <div>
+            <label className="form-label" htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              className="form-input"
+              placeholder="Enter your password"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary-cta"
+            style={{
+              width:"100%",
+              padding:"0.6875rem 1rem",
+              fontSize:"0.9375rem",
+              fontWeight:700,
+              borderRadius:"0.625rem",
+              background:"var(--color-primary)",
+              color:"var(--color-primary-foreground)",
+              border:"none",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.7 : 1,
+              display:"flex",
+              alignItems:"center",
+              justifyContent:"center",
+              gap:"0.5rem",
+              marginTop:"0.5rem",
+            }}
+          >
+            {loading ? (
+              <>
+                <div className="spinner" style={{ width:"1rem", height:"1rem", borderTopColor:"var(--color-primary-foreground)", borderColor:"oklch(0.14 0.04 50 / 0.3)" }} />
+                Signing in...
+              </>
+            ) : (
+              "Sign In"
             )}
+          </button>
 
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                Username
-              </label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
-                placeholder="Enter your username"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
-                placeholder="Enter your password"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          {/* Inline copyright – no navbar, no footer */}
+          <p style={{
+            marginTop:"1rem",
+            textAlign:"center",
+            fontSize:"0.6875rem",
+            color:"oklch(0.42 0.008 220)",
+            lineHeight:1.6,
+          }}>
+            © 2026{" "}
+            <a
+              href="https://www.shorbagy.space/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color:"oklch(0.65 0.14 50)", textDecoration:"none", fontWeight:600, transition:"color 0.15s" }}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = "oklch(0.80 0.18 50)")}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = "oklch(0.65 0.14 50)")}
             >
-              {loading ? (
-                <span className="inline-flex items-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Signing in...
-                </span>
-              ) : (
-                "Sign In"
-              )}
-            </button>
-          </form>
-
-          <p className="text-center text-xs text-gray-400 mt-8">
-            Minya National University &copy; {new Date().getFullYear()}
+              Abdelhmeed Elshorbagy
+            </a>
+            {" "}· All rights reserved
           </p>
-        </div>
+        </form>
+
       </div>
     </div>
   );

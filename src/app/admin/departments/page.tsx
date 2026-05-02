@@ -101,75 +101,170 @@ export default function AdminDepartmentsPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Departments</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage academic departments</p>
-        </div>
-        <button
-          onClick={openAddModal}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          Add Department
-        </button>
-      </div>
+    <>
+      <div className="dashboard-glow-bg" aria-hidden="true" />
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-        {loading ? (
-          <div className="p-8 text-center text-gray-500">Loading...</div>
-        ) : departments.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">No departments found. Add your first department!</div>
-        ) : (
-          <DataTable columns={columns} data={departments} onRowClick={(row) => openEditModal(row as unknown as Department)} />
-        )}
+      <div style={{ display: "flex", flexDirection: "column", gap: "2rem", position: "relative", zIndex: 1 }}>
+
+        {/* ── Page header ── */}
+        <div className="page-header" style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+          <p style={{
+            fontSize: "0.6875rem",
+            fontWeight: 700,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "var(--muted-foreground)",
+          }}>
+            Academic structure
+          </p>
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
+            <h1 style={{
+              fontSize: "2rem",
+              fontWeight: 800,
+              color: "var(--foreground)",
+              lineHeight: 1.15,
+              letterSpacing: "-0.03em",
+            }}>
+              Departments
+            </h1>
+            <button
+              onClick={openAddModal}
+              className="btn-primary-cta"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.375rem",
+                borderRadius: "0.5rem",
+                background: "var(--color-primary)",
+                color: "var(--color-primary-foreground)",
+                padding: "0.5rem 1.125rem",
+                fontSize: "0.8125rem",
+                fontWeight: 700,
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              Add Department
+            </button>
+          </div>
+        </div>
+
+        {/* ── Departments surface ── */}
+        <div
+          className="glass-card section-card"
+          style={{ "--delay": "120ms", overflow: "hidden", padding: 0 } as React.CSSProperties}
+        >
+          {loading ? (
+            <div style={{ padding: "3rem 2rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="skeleton-line" style={{ width: `${60 + i * 10}%`, animationDelay: `${i * 80}ms` }} />
+              ))}
+            </div>
+          ) : departments.length === 0 ? (
+            <div className="empty-state">
+              <svg className="empty-state-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5m-4 0h4"/>
+              </svg>
+              <p className="empty-state-title">No departments yet</p>
+              <p className="empty-state-body">Create the first academic department to begin organizing your institution.</p>
+              <button
+                onClick={openAddModal}
+                className="btn-primary-cta"
+                style={{
+                  marginTop: "0.25rem",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.375rem",
+                  padding: "0.4375rem 1rem",
+                  borderRadius: "0.5rem",
+                  background: "var(--color-primary)",
+                  color: "var(--color-primary-foreground)",
+                  fontSize: "0.8125rem",
+                  fontWeight: 700,
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Add Department
+              </button>
+            </div>
+          ) : (
+            <DataTable
+              columns={columns}
+              data={departments}
+              onRowClick={(row) => openEditModal(row as unknown as Department)}
+            />
+          )}
+        </div>
+
       </div>
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editingDept ? "Edit Department" : "Add Department"}>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <label className="form-label" htmlFor="dept-name">Name</label>
             <input
+              id="dept-name"
               type="text"
               value={formName}
               onChange={(e) => setFormName(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="form-input"
               placeholder="e.g. Computer and Artificial Intelligence"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Code</label>
+            <label className="form-label" htmlFor="dept-code">Code</label>
             <input
+              id="dept-code"
               type="text"
               value={formCode}
               onChange={(e) => setFormCode(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="form-input"
               placeholder="e.g. CS"
             />
           </div>
-          <div className="flex justify-end gap-2 pt-2">
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", paddingTop: "0.5rem" }}>
             <button
               type="button"
               onClick={() => setShowModal(false)}
-              className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="btn-ghost-cta"
+              style={{
+                padding: "0.5rem 1rem",
+                fontSize: "0.8125rem",
+                fontWeight: 600,
+                border: "1px solid var(--border)",
+                borderRadius: "0.5rem",
+                background: "var(--card)",
+                color: "var(--foreground)",
+                cursor: "pointer",
+              }}
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition-colors"
+              className="btn-primary-cta"
+              style={{
+                padding: "0.5rem 1.125rem",
+                fontSize: "0.8125rem",
+                fontWeight: 700,
+                borderRadius: "0.5rem",
+                background: "var(--color-primary)",
+                color: "var(--color-primary-foreground)",
+                border: "none",
+                cursor: "pointer",
+                opacity: submitting ? 0.6 : 1,
+              }}
             >
               {submitting ? "Saving..." : editingDept ? "Update" : "Create"}
             </button>
           </div>
         </form>
       </Modal>
-    </div>
+    </>
   );
 }

@@ -177,9 +177,10 @@ export default function Sidebar({ role, userName, isOpen, onClose, basePath }: S
         onClick={onClose}
       />
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-border flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:z-auto ${
+        className={`fixed top-0 left-0 z-50 h-full w-64 border-r border-border flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:z-auto ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
+        style={{ background: "var(--card)" }}
       >
         <div className="flex items-center gap-3 px-6 py-5 border-b border-border">
           <Image
@@ -187,7 +188,8 @@ export default function Sidebar({ role, userName, isOpen, onClose, basePath }: S
             alt="Minya National University"
             width={44}
             height={44}
-            className="w-11 h-11 rounded-lg object-contain bg-white border border-border"
+            className="w-11 h-11 rounded-lg object-contain border border-border"
+            style={{ background: "oklch(0.24 0.007 220)" }}
           />
           <div>
             <div className="font-bold text-foreground text-sm leading-tight">Minya National</div>
@@ -205,9 +207,13 @@ export default function Sidebar({ role, userName, isOpen, onClose, basePath }: S
                     href={link.href}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                       isActive
-                        ? "bg-primary-50 text-primary-700"
-                        : "text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900"
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
                     }`}
+                    style={isActive ? {
+                      background: "oklch(0.30 0.07 50 / 0.35)",
+                      color: "oklch(0.85 0.14 50)",
+                    } : undefined}
                   >
                     {link.icon}
                     {link.label}
@@ -220,7 +226,13 @@ export default function Sidebar({ role, userName, isOpen, onClose, basePath }: S
 
         <div className="border-t border-border p-4">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-semibold">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold"
+              style={{
+                background: "oklch(0.30 0.07 50 / 0.45)",
+                color: "oklch(0.85 0.14 50)",
+              }}
+            >
               {userName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">

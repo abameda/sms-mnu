@@ -47,13 +47,21 @@ export default async function StudentDetailPage({
 
   if (!student) {
     return (
-      <div className="text-center py-12">
-        <h1 className="text-2xl font-bold text-gray-900">Student Not Found</h1>
-        <p className="text-gray-500 mt-2">The student you are looking for does not exist.</p>
-        <Link href="/admin/students" className="mt-4 inline-block text-blue-600 hover:underline">
-          Back to Students
-        </Link>
-      </div>
+      <>
+        <div className="dashboard-glow-bg" aria-hidden="true" />
+        <div style={{ position:"relative", zIndex:1 }}>
+          <div className="glass-card">
+            <div className="empty-state">
+              <p className="empty-state-title">Student Not Found</p>
+              <p className="empty-state-body">The student you are looking for does not exist.</p>
+              <Link href="/admin/students" className="back-link" style={{ marginTop:"0.5rem" }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Back to Students
+              </Link>
+            </div>
+          </div>
+        </div>
+      </>
     );
   }
 

@@ -76,7 +76,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
       <div
         ref={contentRef}
         tabIndex={-1}
-        className={`bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto transition-[opacity,transform,filter] duration-200 ease-out ${
+        className={`bg-card rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto transition-[opacity,transform,filter] duration-200 ease-out ${
           isVisible ? "translate-y-0 scale-100 opacity-100 blur-0" : "translate-y-2 scale-[0.98] opacity-0 blur-[2px]"
         }`}
       >

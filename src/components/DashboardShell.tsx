@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 type Role = "admin" | "student_affairs" | "student";
 
@@ -28,6 +29,7 @@ export default function DashboardShell({ role, userName, title, children }: Dash
           onMenuToggle={() => setSidebarOpen((prev) => !prev)}
         />
         <main className="flex-1 p-6 overflow-auto">{children}</main>
+        <Footer />
       </div>
     </div>
   );

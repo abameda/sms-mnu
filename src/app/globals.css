@@ -1,38 +1,60 @@
 @import "tailwindcss";
 
+/* ── Animated gradient glow: @property registration ──
+   Registers numeric-interpolable custom properties so CSS
+   keyframes can smoothly animate orb positions / opacities.
+   Falls back gracefully: without @property, orbs are static. */
+@property --orb-1-x { syntax: "<percentage>"; inherits: false; initial-value: 15%; }
+@property --orb-1-y { syntax: "<percentage>"; inherits: false; initial-value: 20%; }
+@property --orb-2-x { syntax: "<percentage>"; inherits: false; initial-value: 75%; }
+@property --orb-2-y { syntax: "<percentage>"; inherits: false; initial-value: 60%; }
+@property --orb-3-x { syntax: "<percentage>"; inherits: false; initial-value: 50%; }
+@property --orb-3-y { syntax: "<percentage>"; inherits: false; initial-value: 85%; }
+
+/* ─────────────────────────────────────────────
+   Dark-mode palette: warm charcoal + amber-gold
+   Hue 220 base (warm-shifted, never pure black)
+   Hue 50  primary (amber-gold — action, focus)
+   Hue 175 accent-teal (committed bento surface)
+   Hue 145 success-emerald
+   Hue 15  danger-coral
+───────────────────────────────────────────── */
 :root {
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
-  --color-primary-950: #172554;
+  /* ── Amber-gold primary scale (action, selection, focus) ── */
+  --color-primary-50:  oklch(0.97 0.025 50);
+  --color-primary-100: oklch(0.93 0.055 50);
+  --color-primary-200: oklch(0.87 0.10  50);
+  --color-primary-300: oklch(0.79 0.14  50);
+  --color-primary-400: oklch(0.72 0.16  50);
+  --color-primary-500: oklch(0.65 0.17  50);
+  --color-primary-600: oklch(0.60 0.16  50);
+  --color-primary-700: oklch(0.52 0.14  50);
+  --color-primary-800: oklch(0.42 0.11  50);
+  --color-primary-900: oklch(0.33 0.08  50);
+  --color-primary-950: oklch(0.24 0.05  50);
 
-  --color-secondary-50: #f9fafb;
-  --color-secondary-100: #f3f4f6;
-  --color-secondary-200: #e5e7eb;
-  --color-secondary-300: #d1d5db;
-  --color-secondary-400: #9ca3af;
-  --color-secondary-500: #6b7280;
-  --color-secondary-600: #4b5563;
-  --color-secondary-700: #374151;
-  --color-secondary-800: #1f2937;
-  --color-secondary-900: #111827;
+  /* ── Neutral (warm-charcoal, hue 220 warmth) ── */
+  --color-secondary-50:  oklch(0.96 0.006 220);
+  --color-secondary-100: oklch(0.91 0.009 220);
+  --color-secondary-200: oklch(0.82 0.012 220);
+  --color-secondary-300: oklch(0.69 0.015 220);
+  --color-secondary-400: oklch(0.56 0.015 220);
+  --color-secondary-500: oklch(0.45 0.013 220);
+  --color-secondary-600: oklch(0.36 0.010 220);
+  --color-secondary-700: oklch(0.28 0.008 220);
+  --color-secondary-800: oklch(0.22 0.007 220);
+  --color-secondary-900: oklch(0.17 0.006 220);
 
-  --background: #f9fafb;
-  --foreground: #111827;
-  --card: #ffffff;
-  --card-foreground: #111827;
-  --border: #e5e7eb;
-  --input: #e5e7eb;
-  --ring: #2563eb;
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
+  /* ── Surface tokens (dark-mode) ── */
+  --background:        oklch(0.155 0.007 220);  /* deepest base */
+  --foreground:        oklch(0.94  0.006 60);   /* warm-white ink */
+  --card:              oklch(0.195 0.008 220);  /* card surface */
+  --card-foreground:   oklch(0.94  0.006 60);
+  --border:            oklch(0.28  0.009 220);  /* quiet dividers */
+  --input:             oklch(0.28  0.009 220);
+  --ring:              oklch(0.72  0.16  50);   /* amber focus ring */
+  --muted:             oklch(0.22  0.007 220);
+  --muted-foreground:  oklch(0.56  0.010 220);
 }
 
 @theme inline {
@@ -45,27 +67,53 @@
   --color-ring: var(--ring);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-primary: var(--color-primary-600);
-  --color-primary-foreground: #ffffff;
-  --color-primary-light: var(--color-primary-50);
-  --color-primary-dark: var(--color-primary-800);
-  --color-secondary: var(--color-secondary-600);
-  --color-secondary-foreground: #ffffff;
-  --color-secondary-light: var(--color-secondary-50);
-  --color-danger: #dc2626;
-  --color-danger-light: #fef2f2;
-  --color-success: #16a34a;
-  --color-success-light: #f0fdf4;
-  --color-warning: #d97706;
-  --color-warning-light: #fffbeb;
-  --color-info: #2563eb;
-  --color-info-light: #eff6ff;
-  --font-sans: var(--font-inter);
+  --color-primary: oklch(0.72 0.16 50);             /* amber-gold */
+  --color-primary-foreground: oklch(0.14 0.04 50);
+  --color-primary-light: oklch(0.28 0.06 50 / 0.35);
+  --color-primary-dark:  oklch(0.52 0.14 50);
+  --color-secondary: var(--color-secondary-400);
+  --color-secondary-foreground: var(--foreground);
+  --color-secondary-light: oklch(0.26 0.008 220);
+  /* ── Semantic states ── */
+  --color-danger:       oklch(0.66 0.19 15);        /* coral-red */
+  --color-danger-light: oklch(0.22 0.05 15);
+  --color-success:      oklch(0.70 0.17 145);       /* emerald */
+  --color-success-light:oklch(0.22 0.05 145);
+  --color-warning:      oklch(0.79 0.16 80);        /* amber-yellow */
+  --color-warning-light:oklch(0.25 0.05 80);
+  --color-info:         oklch(0.70 0.14 200);       /* sky */
+  --color-info-light:   oklch(0.22 0.05 200);
+  /* ── Forest-teal accent (committed surfaces) ── */
+  --color-teal:         oklch(0.70 0.15 175);
+  --color-teal-dark:    oklch(0.35 0.10 175);
+  --color-teal-surface: oklch(0.24 0.07 175);
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-arabic: var(--font-cairo), var(--font-inter), system-ui, sans-serif;
+
+  /* Typography tokens */
+  --text-display: 1.875rem;
+  --text-title: 1.125rem;
+  --text-body: 1rem;
+  --text-secondary: 0.875rem;
+  --text-label: 0.75rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+
+/* Arabic / RTL surfaces */
+[lang="ar"],
+.font-arabic {
+  font-family: var(--font-arabic);
+}
+
+[dir="rtl"] {
+  font-family: var(--font-arabic);
 }
 
 .card {
@@ -74,6 +122,351 @@ body {
   border-radius: 0.75rem;
   padding: 1.5rem;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+}
+
+/* ── Glassmorphism card ────────────────────────────────────────
+   Semi-transparent frosted surface. Only applied to secondary
+   bento cells — the committed teal hero card keeps its opaque
+   surface so the hierarchy is preserved.
+
+   The ::before pseudo-element provides the hover sheen: a soft
+   radial highlight in the top-left corner. Only `opacity`
+   transitions — no layout properties. ───────────────────────── */
+/* ── Entrance animations ────────────────────────────────────────
+   Single keyframe; each element sets --delay to stagger.
+   fade-rise: opacity 0→1, translateY 18px→0.
+   Easing: expo-out (0.16,1,0.3,1) — decisive, never bouncy. ── */
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply to bento cells and grade cards */
+.bento-cell {
+  --delay: 0ms;
+  animation: fade-rise 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--delay);
+}
+
+.grade-card {
+  --delay: 0ms;
+  animation: fade-rise 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--delay);
+}
+
+/* Page header fade-in (faster, leads the sequence) */
+.dashboard-header {
+  animation: fade-rise 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 40ms;
+}
+
+.glass-card {
+  position: relative;
+  overflow: hidden;
+  background: oklch(0.195 0.008 220 / 0.55);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid oklch(0.38 0.010 220 / 0.6);
+  border-radius: 1rem;
+  box-shadow:
+    0 0 0 1px oklch(0.50 0.010 220 / 0.08) inset,
+    0 8px 32px oklch(0.06 0.005 220 / 0.45),
+    0 1px 0 oklch(0.55 0.010 220 / 0.15) inset;
+  transition:
+    border-color 200ms cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 200ms cubic-bezier(0.25, 1, 0.5, 1),
+    transform 200ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 60% 50% at 10% 0%,
+    oklch(0.72 0.16 50 / 0.06) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+.glass-card:hover {
+  border-color: oklch(0.50 0.012 220 / 0.9);
+  box-shadow:
+    0 0 0 1px oklch(0.72 0.16 50 / 0.12) inset,
+    0 14px 44px oklch(0.06 0.005 220 / 0.60),
+    0 1px 0 oklch(0.65 0.012 220 / 0.2) inset;
+  transform: translateY(-2px);
+}
+
+.glass-card:hover::before {
+  opacity: 1;
+}
+
+/* Content inside glass-card must sit above the sheen */
+.glass-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Teal hero bento cell (Cell A) hover ───────────────────────
+   Lighter lift — the cell is large and opaque, so we use a
+   border-color shimmer + subtle scale rather than translate. ─── */
+.bento-hero {
+  transition:
+    box-shadow 220ms cubic-bezier(0.25, 1, 0.5, 1),
+    border-color 220ms cubic-bezier(0.25, 1, 0.5, 1),
+    transform 220ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.bento-hero:hover {
+  box-shadow: 0 16px 48px oklch(0.26 0.09 175 / 0.5);
+  transform: translateY(-2px);
+}
+
+/* ── Quick-action links (Cell C) ───────────────────────────────
+   Arrow nudges 4px right. Border tightens toward amber. ────── */
+.quick-action-link {
+  transition:
+    background 140ms cubic-bezier(0.25, 1, 0.5, 1),
+    border-color 140ms cubic-bezier(0.25, 1, 0.5, 1),
+    transform 140ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.quick-action-link:hover {
+  background: oklch(0.26 0.010 220 / 0.7) !important;
+  border-color: oklch(0.72 0.16 50 / 0.35) !important;
+  transform: translateX(2px);
+}
+
+.quick-action-link:hover .qa-arrow {
+  transform: translateX(4px);
+}
+
+/* RTL: flip directional arrows */
+[dir="rtl"] .qa-arrow {
+  transform: scaleX(-1);
+}
+[dir="rtl"] .quick-action-link:hover {
+  transform: translateX(-2px);
+}
+[dir="rtl"] .quick-action-link:hover .qa-arrow {
+  transform: scaleX(-1) translateX(-4px);
+}
+[dir="rtl"] .va-arrow {
+  transform: scaleX(-1);
+}
+[dir="rtl"] .view-all-link:hover .va-arrow {
+  transform: scaleX(-1) translateX(-3px);
+}
+
+.qa-arrow {
+  transition: transform 140ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ── CTA buttons (header) ──────────────────────────────────────
+   Primary: lift + shadow bloom. Ghost: border amber-tint. ─── */
+.btn-primary-cta {
+  transition:
+    background 150ms cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 150ms cubic-bezier(0.25, 1, 0.5, 1),
+    transform 150ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.btn-primary-cta:hover {
+  background: oklch(0.76 0.17 50) !important;
+  box-shadow: 0 4px 16px oklch(0.72 0.16 50 / 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-primary-cta:active {
+  transform: scale(0.97) translateY(0);
+  box-shadow: none;
+}
+
+.btn-ghost-cta {
+  transition:
+    background 150ms cubic-bezier(0.25, 1, 0.5, 1),
+    border-color 150ms cubic-bezier(0.25, 1, 0.5, 1),
+    transform 150ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.btn-ghost-cta:hover {
+  background: oklch(0.24 0.010 220 / 0.8) !important;
+  border-color: oklch(0.72 0.16 50 / 0.4) !important;
+  transform: translateY(-1px);
+}
+
+.btn-ghost-cta:active {
+  transform: scale(0.97) translateY(0);
+}
+
+/* ── "View all" link ──────────────────────────────────────────── */
+.view-all-link {
+  transition:
+    color 130ms cubic-bezier(0.25, 1, 0.5, 1),
+    gap 130ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.view-all-link:hover {
+  color: oklch(0.82 0.18 50) !important;
+}
+
+.view-all-link:hover .va-arrow {
+  transform: translateX(3px);
+}
+
+.va-arrow {
+  transition: transform 130ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ── Grade feed cards ─────────────────────────────────────────── */
+.grade-card.glass-card:hover {
+  transform: translateY(-3px);
+}
+
+/* ── Ambient dashboard glow layer ──────────────────────────────
+   Three slow-drifting radial orbs rendered as a fixed layer
+   behind dashboard content. The layer is `pointer-events: none`
+   so it never intercepts clicks. Animates via @property tokens.
+   Reduced-motion: static positions, no animation. ─────────────*/
+.dashboard-glow-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.dashboard-glow-bg::before,
+.dashboard-glow-bg::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  mix-blend-mode: screen;
+}
+
+/* Orb 1 — amber-gold, top-left drift */
+.dashboard-glow-bg::before {
+  --orb-1-x: 15%;
+  --orb-1-y: 20%;
+  width: 55vw;
+  height: 45vw;
+  max-width: 700px;
+  max-height: 580px;
+  left: var(--orb-1-x);
+  top: var(--orb-1-y);
+  translate: -50% -50%;
+  background: radial-gradient(
+    circle,
+    oklch(0.72 0.16 50 / 0.11) 0%,
+    oklch(0.55 0.14 50 / 0.05) 45%,
+    transparent 70%
+  );
+  animation: orb-drift-1 28s ease-in-out infinite alternate;
+}
+
+/* Orb 2 — teal, bottom-right drift */
+.dashboard-glow-bg::after {
+  --orb-2-x: 78%;
+  --orb-2-y: 65%;
+  width: 60vw;
+  height: 50vw;
+  max-width: 780px;
+  max-height: 640px;
+  left: var(--orb-2-x);
+  top: var(--orb-2-y);
+  translate: -50% -50%;
+  background: radial-gradient(
+    circle,
+    oklch(0.55 0.14 175 / 0.09) 0%,
+    oklch(0.40 0.10 175 / 0.04) 45%,
+    transparent 70%
+  );
+  animation: orb-drift-2 35s ease-in-out infinite alternate;
+}
+
+/* Third orb via a sibling span — emerald accent, mid-page */
+.dashboard-glow-orb3 {
+  --orb-3-x: 48%;
+  --orb-3-y: 88%;
+  position: fixed;
+  width: 40vw;
+  height: 35vw;
+  max-width: 520px;
+  max-height: 440px;
+  left: var(--orb-3-x);
+  top: var(--orb-3-y);
+  translate: -50% -50%;
+  border-radius: 50%;
+  filter: blur(90px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    circle,
+    oklch(0.55 0.14 145 / 0.07) 0%,
+    transparent 70%
+  );
+  animation: orb-drift-3 42s ease-in-out infinite alternate;
+}
+
+/* Keyframes — move @property values, not layout props */
+@keyframes orb-drift-1 {
+  0%   { --orb-1-x: 12%; --orb-1-y: 18%; }
+  33%  { --orb-1-x: 22%; --orb-1-y: 30%; }
+  66%  { --orb-1-x: 8%;  --orb-1-y: 10%; }
+  100% { --orb-1-x: 28%; --orb-1-y: 22%; }
+}
+
+@keyframes orb-drift-2 {
+  0%   { --orb-2-x: 78%; --orb-2-y: 65%; }
+  33%  { --orb-2-x: 88%; --orb-2-y: 55%; }
+  66%  { --orb-2-x: 72%; --orb-2-y: 75%; }
+  100% { --orb-2-x: 82%; --orb-2-y: 48%; }
+}
+
+@keyframes orb-drift-3 {
+  0%   { --orb-3-x: 48%; --orb-3-y: 88%; }
+  50%  { --orb-3-x: 55%; --orb-3-y: 78%; }
+  100% { --orb-3-x: 40%; --orb-3-y: 92%; }
+}
+
+/* Reduced-motion: freeze orbs; no entrance/hover animations */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-glow-bg::before,
+  .dashboard-glow-bg::after,
+  .dashboard-glow-orb3 {
+    animation: none;
+  }
+  .bento-cell,
+  .grade-card,
+  .dashboard-header {
+    animation: none;
+  }
+  .glass-card::before,
+  .glass-card,
+  .bento-hero,
+  .quick-action-link,
+  .qa-arrow,
+  .btn-primary-cta,
+  .btn-ghost-cta,
+  .view-all-link,
+  .va-arrow {
+    transition: none;
+    transform: none;
+  }
 }
 
 .badge {
@@ -87,8 +480,8 @@ body {
 }
 
 .badge-primary {
-  background: var(--color-primary-100);
-  color: var(--color-primary-700);
+  background: oklch(0.28 0.07 50 / 0.55);
+  color: oklch(0.85 0.14 50);
 }
 
 .badge-success {
@@ -133,6 +526,396 @@ body {
 
 button:not(:disabled):active {
   transform: scale(0.98);
+}
+
+/* ── Page header fade-in (generic, not just dashboard) ────────── */
+.page-header {
+  animation: fade-rise 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 40ms;
+}
+
+/* ── Section card entrance (staggers via --delay) ─────────────── */
+.section-card {
+  --delay: 0ms;
+  animation: fade-rise 440ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--delay);
+}
+
+/* ── Stat mini-card ───────────────────────────────────────────── */
+.stat-mini {
+  position: relative;
+  overflow: hidden;
+  background: oklch(0.195 0.008 220 / 0.55);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid oklch(0.38 0.010 220 / 0.6);
+  border-radius: 0.875rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow:
+    0 0 0 1px oklch(0.50 0.010 220 / 0.08) inset,
+    0 4px 16px oklch(0.06 0.005 220 / 0.35);
+  transition:
+    border-color 200ms cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 200ms cubic-bezier(0.25, 1, 0.5, 1),
+    transform 200ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.stat-mini:hover {
+  border-color: oklch(0.50 0.012 220 / 0.9);
+  box-shadow:
+    0 0 0 1px oklch(0.72 0.16 50 / 0.10) inset,
+    0 8px 28px oklch(0.06 0.005 220 / 0.50);
+  transform: translateY(-1px);
+}
+
+/* ── Shared form control styling ──────────────────────────────── */
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 0.5625rem 0.875rem;
+  background: oklch(0.22 0.007 220);
+  border: 1px solid oklch(0.32 0.009 220);
+  border-radius: 0.5rem;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  outline: none;
+  transition:
+    border-color 150ms cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 150ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.form-input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-input:focus,
+.form-select:focus {
+  border-color: oklch(0.72 0.16 50 / 0.6);
+  box-shadow: 0 0 0 3px oklch(0.72 0.16 50 / 0.12);
+}
+
+.form-select option {
+  background: oklch(0.22 0.007 220);
+  color: var(--foreground);
+}
+
+.form-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin-bottom: 0.375rem;
+}
+
+/* ── Data table ───────────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.data-table thead tr {
+  border-bottom: 1px solid var(--border);
+}
+
+.data-table thead th {
+  padding: 0.625rem 0.875rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  text-align: left;
+}
+
+.data-table tbody tr {
+  border-bottom: 1px solid oklch(0.24 0.008 220 / 0.5);
+  transition: background 120ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.data-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+  background: oklch(0.22 0.008 220 / 0.6);
+  cursor: pointer;
+}
+
+.data-table td {
+  padding: 0.75rem 0.875rem;
+  color: var(--foreground);
+}
+
+.data-table td.muted {
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+}
+
+/* ── Loading skeleton ─────────────────────────────────────────── */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+.skeleton {
+  background: oklch(0.25 0.008 220);
+  border-radius: 0.375rem;
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+.skeleton-line {
+  height: 0.875rem;
+  background: oklch(0.25 0.008 220);
+  border-radius: 0.25rem;
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+/* ── Loading spinner ──────────────────────────────────────────── */
+.spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid oklch(0.32 0.009 220);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Empty-state surface ──────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.empty-state-icon {
+  color: var(--muted-foreground);
+  opacity: 0.4;
+}
+
+.empty-state-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.empty-state-body {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+  max-width: 30ch;
+  line-height: 1.5;
+}
+
+/* ── Error surface ────────────────────────────────────────────── */
+.error-surface {
+  background: var(--color-danger-light);
+  border: 1px solid oklch(0.66 0.19 15 / 0.3);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1.125rem;
+  color: var(--color-danger);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* ── Info row (definition list) ───────────────────────────────── */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid oklch(0.26 0.008 220 / 0.5);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row dt {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.info-row dd {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+  text-align: right;
+}
+
+/* ── Section heading (h2 inside surface) ─────────────────────── */
+.section-heading {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin-bottom: 1rem;
+}
+
+/* ── Filter bar ───────────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+  align-items: flex-end;
+}
+
+/* ── Back navigation link ─────────────────────────────────────── */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 130ms cubic-bezier(0.25, 1, 0.5, 1);
+  margin-bottom: 0.5rem;
+}
+
+.back-link:hover {
+  color: var(--foreground);
+}
+
+/* ── Pagination controls ──────────────────────────────────────── */
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card);
+  color: var(--foreground);
+  cursor: pointer;
+  transition:
+    background 140ms cubic-bezier(0.25, 1, 0.5, 1),
+    border-color 140ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.page-btn:hover:not(:disabled) {
+  background: oklch(0.24 0.010 220 / 0.8);
+  border-color: oklch(0.72 0.16 50 / 0.35);
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Semester header band ─────────────────────────────────────── */
+.semester-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.875rem 1.25rem;
+  background: oklch(0.20 0.008 220 / 0.6);
+  border-bottom: 1px solid var(--border);
+}
+
+.semester-band-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+.semester-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.semester-badge-credits {
+  background: oklch(0.26 0.008 220 / 0.7);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.semester-badge-gpa {
+  background: oklch(0.28 0.06 50 / 0.4);
+  color: var(--color-primary);
+}
+
+/* ── Status badges aligned to design tokens ───────────────────── */
+.badge-status-active {
+  background: var(--color-success-light);
+  color: var(--color-success);
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge-status-graduated {
+  background: oklch(0.28 0.06 50 / 0.4);
+  color: var(--color-primary);
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge-status-suspended {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* ── Profile hero header ──────────────────────────────────────── */
+.profile-hero {
+  background: oklch(0.26 0.09 175);
+  border-radius: 1rem 1rem 0 0;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-hero::after {
+  content: "";
+  position: absolute;
+  right: -3rem;
+  top: -3rem;
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  border: 2px solid oklch(0.55 0.10 175);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Reduced motion: freeze section-card/page-header/stat-mini animations */
+@media (prefers-reduced-motion: reduce) {
+  .page-header,
+  .section-card,
+  .stat-mini {
+    animation: none;
+    transition: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -19,29 +19,15 @@ export default async function StudentDashboardPage() {
 
   if (studentId) {
     student = db
-      .prepare(
-        `SELECT s.*, d.name as department_name
-         FROM students s
-         LEFT JOIN departments d ON s.department_id = d.id
-         WHERE s.id = ?`
-      )
+      .prepare(`SELECT s.*, d.name as department_name FROM students s LEFT JOIN departments d ON s.department_id = d.id WHERE s.id = ?`)
       .get(studentId) as (Record<string, unknown> & { name: string; year: number; department_name: string }) | null;
 
     grades = db
-      .prepare(
-        `SELECT g.*, sub.name as subject_name, sub.code as subject_code, sub.credits
-         FROM grades g
-         LEFT JOIN subjects sub ON g.subject_id = sub.id
-         WHERE g.student_id = ?
-         ORDER BY g.academic_year DESC, g.id DESC`
-      )
+      .prepare(`SELECT g.*, sub.name as subject_name, sub.code as subject_code, sub.credits FROM grades g LEFT JOIN subjects sub ON g.subject_id = sub.id WHERE g.student_id = ? ORDER BY g.academic_year DESC, g.id DESC`)
       .all(studentId) as Record<string, unknown>[];
 
-    const totalPoints = grades.reduce(
-      (sum, grade) => sum + letterGradeToPoints(String(grade.letter_grade)) * Number(grade.credits || 0),
-      0
-    );
-    const totalGradeCredits = grades.reduce((sum, grade) => sum + Number(grade.credits || 0), 0);
+    const totalPoints = grades.reduce((sum, g) => sum + letterGradeToPoints(String(g.letter_grade)) * Number(g.credits || 0), 0);
+    const totalGradeCredits = grades.reduce((sum, g) => sum + Number(g.credits || 0), 0);
     gpa = totalGradeCredits ? Math.round((totalPoints / totalGradeCredits) * 100) / 100 : 0;
   }
 
@@ -49,78 +35,115 @@ export default async function StudentDashboardPage() {
   const totalCredits = grades.reduce((sum: number, g) => sum + (Number(g.credits) || 0), 0);
   const currentYear = student ? `Year ${student.year}` : "N/A";
 
+  function letterBadgeClass(letter: string): string {
+    if (["A+","A","A-"].includes(letter)) return "badge badge-success";
+    if (["B+","B","B-"].includes(letter)) return "badge badge-primary";
+    if (["C+","C","C-"].includes(letter)) return "badge badge-warning";
+    return "badge badge-danger";
+  }
+
   return (
-    <div className="space-y-5">
-      <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
-        <p className="text-sm font-medium text-muted-foreground">{student?.department_name || "Student portal"}</p>
-        <div className="mt-2 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-foreground">{student?.name || userName}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{currentYear}</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href="/student/grades"
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            >
-              View Grades
-            </Link>
-            <Link
-              href="/student/transcript"
-              className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            >
-              Transcript
-            </Link>
-          </div>
-        </div>
-      </div>
+    <>
+      <div className="dashboard-glow-bg" aria-hidden="true" />
+      <div style={{ display:"flex", flexDirection:"column", gap:"2rem", position:"relative", zIndex:1 }}>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
-          <p className="text-sm font-medium text-muted-foreground">Current GPA</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{typeof gpa === "number" ? gpa.toFixed(2) : "N/A"}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
-          <p className="text-sm font-medium text-muted-foreground">Credits</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{totalCredits}</p>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
-          <p className="text-sm font-medium text-muted-foreground">Recorded grades</p>
-          <p className="mt-1 text-2xl font-bold text-foreground">{grades.length}</p>
-        </div>
-      </div>
-
-      <section className="rounded-xl border border-border bg-card shadow-sm">
-        <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <div>
-            <h2 className="text-base font-semibold text-foreground">Recent grades</h2>
-            <p className="text-sm text-muted-foreground">Most recent academic records</p>
+        {/* ── Identity header ── */}
+        <div className="page-header" style={{ display:"flex", flexDirection:"column", gap:"0.25rem" }}>
+          <p style={{ fontSize:"0.6875rem", fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:"var(--muted-foreground)" }}>
+            {student?.department_name || "Student portal"}
+          </p>
+          <div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between", flexWrap:"wrap", gap:"1rem" }}>
+            <div>
+              <h1 style={{ fontSize:"2rem", fontWeight:800, color:"var(--foreground)", lineHeight:1.15, letterSpacing:"-0.03em" }}>
+                {student?.name || userName}
+              </h1>
+              <p style={{ fontSize:"0.875rem", color:"var(--muted-foreground)", marginTop:"0.25rem" }}>{currentYear}</p>
+            </div>
+            <div style={{ display:"flex", gap:"0.625rem", flexWrap:"wrap" }}>
+              <Link href="/student/grades" className="btn-primary-cta" style={{ display:"inline-flex", alignItems:"center", gap:"0.375rem", borderRadius:"0.5rem", background:"var(--color-primary)", color:"var(--color-primary-foreground)", padding:"0.5rem 1.125rem", fontSize:"0.8125rem", fontWeight:700, textDecoration:"none" }}>
+                View Grades
+              </Link>
+              <Link href="/student/transcript" className="btn-ghost-cta" style={{ display:"inline-flex", alignItems:"center", gap:"0.375rem", borderRadius:"0.5rem", border:"1px solid var(--border)", background:"var(--card)", color:"var(--foreground)", padding:"0.5rem 1.125rem", fontSize:"0.8125rem", fontWeight:600, textDecoration:"none" }}>
+                Transcript
+              </Link>
+            </div>
           </div>
-          <Link href="/student/profile" className="text-sm font-semibold text-primary hover:text-primary-dark">
-            Profile
-          </Link>
         </div>
-        <div className="p-5">
+
+        {/* ── Stat strip bento ── */}
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:"0.875rem" }}>
+          {/* GPA — committed teal */}
+          <div className="bento-cell" style={{ "--delay":"120ms", gridColumn:"span 1", borderRadius:"1rem", background:"oklch(0.26 0.09 175)", padding:"1.75rem 1.75rem 1.5rem", display:"flex", flexDirection:"column", gap:"0.5rem", position:"relative", overflow:"hidden" } as React.CSSProperties}>
+            <div style={{ position:"absolute", right:"-2rem", top:"-2rem", width:"9rem", height:"9rem", borderRadius:"50%", border:"2px solid oklch(0.55 0.10 175)", opacity:0.3, pointerEvents:"none" }} aria-hidden="true" />
+            <p style={{ fontSize:"0.6875rem", fontWeight:700, letterSpacing:"0.09em", textTransform:"uppercase", color:"oklch(0.78 0.08 175)" }}>GPA</p>
+            <p style={{ fontSize:"3rem", fontWeight:800, lineHeight:1, letterSpacing:"-0.04em", color:"oklch(0.96 0.015 90)", fontVariantNumeric:"tabular-nums" } as React.CSSProperties}>
+              {gpa > 0 ? gpa.toFixed(2) : "—"}
+            </p>
+            <p style={{ fontSize:"0.75rem", color:"oklch(0.65 0.06 175)" }}>Out of 4.00</p>
+          </div>
+          {/* Credits */}
+          <div className="glass-card bento-cell" style={{ "--delay":"200ms", padding:"1.75rem 1.75rem 1.5rem", display:"flex", flexDirection:"column", gap:"0.5rem" } as React.CSSProperties}>
+            <p style={{ fontSize:"0.6875rem", fontWeight:700, letterSpacing:"0.09em", textTransform:"uppercase", color:"var(--muted-foreground)" }}>Credits</p>
+            <p style={{ fontSize:"3rem", fontWeight:800, lineHeight:1, letterSpacing:"-0.04em", color:"var(--foreground)", fontVariantNumeric:"tabular-nums" } as React.CSSProperties}>{totalCredits}</p>
+            <p style={{ fontSize:"0.75rem", color:"var(--muted-foreground)" }}>Graded</p>
+          </div>
+          {/* Subjects */}
+          <div className="glass-card bento-cell" style={{ "--delay":"280ms", padding:"1.75rem 1.75rem 1.5rem", display:"flex", flexDirection:"column", gap:"0.5rem" } as React.CSSProperties}>
+            <p style={{ fontSize:"0.6875rem", fontWeight:700, letterSpacing:"0.09em", textTransform:"uppercase", color:"var(--muted-foreground)" }}>Subjects</p>
+            <p style={{ fontSize:"3rem", fontWeight:800, lineHeight:1, letterSpacing:"-0.04em", color:"var(--foreground)", fontVariantNumeric:"tabular-nums" } as React.CSSProperties}>{grades.length}</p>
+            <p style={{ fontSize:"0.75rem", color:"var(--muted-foreground)" }}>Recorded</p>
+          </div>
+        </div>
+
+        {/* ── Recent grades ── */}
+        <section>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1rem" }}>
+            <div>
+              <h2 style={{ fontSize:"1rem", fontWeight:700, color:"var(--foreground)", letterSpacing:"-0.015em" }}>Recent grades</h2>
+              <p style={{ fontSize:"0.8125rem", color:"var(--muted-foreground)", marginTop:"0.125rem" }}>Most recent academic records</p>
+            </div>
+            <Link href="/student/profile" className="view-all-link" style={{ fontSize:"0.8125rem", fontWeight:600, color:"var(--color-primary)", textDecoration:"none", display:"flex", alignItems:"center", gap:"0.25rem" }}>
+              Profile
+              <svg className="va-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </Link>
+          </div>
+
           {recentGrades.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No grades recorded yet.</p>
+            <div className="glass-card">
+              <div className="empty-state">
+                <svg className="empty-state-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+                <p className="empty-state-title">No grades yet</p>
+                <p className="empty-state-body">Your grades will appear here once they have been recorded.</p>
+              </div>
+            </div>
           ) : (
-            <div className="divide-y divide-border">
-              {recentGrades.map((g) => (
-                <div key={String(g.id)} className="grid gap-3 py-3 sm:grid-cols-[1fr_auto] sm:items-center">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-foreground">{String(g.subject_name)}</p>
-                    <p className="truncate text-xs text-muted-foreground">{String(g.subject_code)}</p>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(min(100%, 22rem), 1fr))", gap:"0.75rem" }}>
+              {recentGrades.map((g, idx) => {
+                const grade = Number(g.grade);
+                const hasScore = g.grade !== null && g.grade !== undefined;
+                const letter = String(g.letter_grade || "");
+                return (
+                  <div key={String(g.id)} className="glass-card grade-card" style={{ "--delay":`${340+idx*60}ms`, padding:"1.125rem 1.25rem", display:"flex", alignItems:"center", gap:"1rem" } as React.CSSProperties}>
+                    <span aria-hidden="true" style={{ fontSize:"0.6875rem", fontWeight:700, color:"var(--muted-foreground)", minWidth:"1.25rem", textAlign:"center", letterSpacing:"0.02em", opacity:0.6 }}>{String(idx+1).padStart(2,"0")}</span>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <p style={{ fontSize:"0.875rem", fontWeight:600, color:"var(--foreground)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{String(g.subject_name)}</p>
+                      <p style={{ fontSize:"0.75rem", color:"var(--muted-foreground)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", marginTop:"0.125rem" }}>{String(g.subject_code)}</p>
+                      <div role="progressbar" aria-valuenow={grade} aria-valuemin={0} aria-valuemax={100} aria-label={hasScore ? `Score: ${grade}%` : "Score not recorded"} style={{ marginTop:"0.625rem", height:"3px", borderRadius:"9999px", background:"var(--border)" }}>
+                        <div style={{ height:"3px", borderRadius:"9999px", background: grade >= 85 ? "var(--color-success)" : grade >= 70 ? "var(--color-primary)" : grade >= 55 ? "var(--color-warning)" : "var(--color-danger)", width:`${grade}%`, transition:"width 400ms cubic-bezier(0.16,1,0.3,1)" }} />
+                      </div>
+                    </div>
+                    <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:"0.375rem", flexShrink:0 }}>
+                      <span style={{ fontSize:"1.125rem", fontWeight:800, color:"var(--foreground)", letterSpacing:"-0.02em", lineHeight:1, fontVariantNumeric:"tabular-nums" } as React.CSSProperties}>{hasScore ? `${grade}%` : "—"}</span>
+                      {letter && <span className={letterBadgeClass(letter)}>{letter}</span>}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 sm:justify-end">
-                    <span className="text-sm font-semibold text-foreground">{String(g.grade)}%</span>
-                    <span className="badge badge-primary">{String(g.letter_grade)}</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
-        </div>
-      </section>
-    </div>
+        </section>
+
+      </div>
+    </>
   );
 }

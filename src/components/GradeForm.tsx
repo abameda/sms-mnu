@@ -129,7 +129,7 @@ export default function GradeForm({ initialData, onSubmit, isEditing = false, pr
                 <select
                   value={form.student_id}
                   onChange={(e) => handleChange("student_id", Number(e.target.value))}
-                  className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-white ${errors.student_id ? "border-danger" : "border-input"}`}
+                  className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-card ${errors.student_id ? "border-danger" : "border-input"}`}
                 >
                   <option value={0}>Select student</option>
                   {filteredStudents.slice(0, 50).map((s) => (
@@ -151,7 +151,7 @@ export default function GradeForm({ initialData, onSubmit, isEditing = false, pr
           <select
             value={form.subject_id}
             onChange={(e) => handleChange("subject_id", Number(e.target.value))}
-            className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-white ${errors.subject_id ? "border-danger" : "border-input"}`}
+            className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-card ${errors.subject_id ? "border-danger" : "border-input"}`}
           >
             <option value={0}>Select subject</option>
             {subjects.map((sub) => (
@@ -222,7 +222,7 @@ export default function GradeForm({ initialData, onSubmit, isEditing = false, pr
         <button
           type="button"
           onClick={() => window.history.back()}
-          className="px-4 py-2 text-sm font-medium text-secondary-700 bg-white border border-border rounded-lg hover:bg-secondary-50 transition-colors"
+          className="px-4 py-2 text-sm font-medium text-secondary-700 bg-card border border-border rounded-lg hover:bg-muted transition-colors"
         >
           Cancel
         </button>
