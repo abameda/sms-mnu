@@ -64,6 +64,44 @@ export default async function AdminDashboardPage() {
       <div className="dashboard-glow-bg" aria-hidden="true" />
       <span className="dashboard-glow-orb3" aria-hidden="true" />
 
+      {/* Responsive bento grid styles */}
+      <style>{`
+        .bento-grid {
+          display: grid;
+          grid-template-columns: repeat(12, 1fr);
+          grid-template-rows: auto;
+          gap: 0.875rem;
+        }
+        .bento-col-5 { grid-column: span 5; grid-row: span 2; }
+        .bento-col-4 { grid-column: span 4; }
+        .bento-col-3 { grid-column: span 3; }
+
+        @media (max-width: 640px) {
+          .bento-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+          }
+          .bento-col-5,
+          .bento-col-4,
+          .bento-col-3 {
+            grid-column: 1 / -1;
+            grid-row: auto;
+          }
+          .bento-hero {
+            min-height: 200px !important;
+          }
+        }
+
+        @media (min-width: 641px) and (max-width: 900px) {
+          .bento-grid {
+            grid-template-columns: repeat(6, 1fr);
+          }
+          .bento-col-5 { grid-column: span 6; grid-row: span 2; }
+          .bento-col-4 { grid-column: span 3; }
+          .bento-col-3 { grid-column: span 3; }
+        }
+      `}</style>
+
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem", position: "relative", zIndex: 1 }}>
 
       {/* ── Page header ── */}
@@ -131,18 +169,11 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* ── Bento grid ── */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(12, 1fr)",
-        gridTemplateRows: "auto",
-        gap: "0.875rem",
-      }}>
+      <div className="bento-grid">
 
         {/* Cell A — Students (committed blue surface, spans 5 cols × tall row) */}
-        <div className="bento-cell bento-hero" style={{
+        <div className="bento-cell bento-hero bento-col-5" style={{
           "--delay": "120ms",
-          gridColumn: "span 5",
-          gridRow: "span 2",
           borderRadius: "1rem",
           background: "oklch(0.26 0.09 175)",
           padding: "2rem 2rem 1.75rem",
@@ -241,10 +272,9 @@ export default async function AdminDashboardPage() {
 
         {/* Cell B — Departments (compact, 4 cols) */}
         <div
-          className="glass-card bento-cell"
+          className="glass-card bento-cell bento-col-4"
           style={{
             "--delay": "200ms",
-            gridColumn: "span 4",
             padding: "1.5rem 1.75rem",
             display: "flex",
             flexDirection: "column",
@@ -277,10 +307,9 @@ export default async function AdminDashboardPage() {
 
         {/* Cell C — Quick actions (3 cols) */}
         <div
-          className="glass-card bento-cell"
+          className="glass-card bento-cell bento-col-3"
           style={{
             "--delay": "280ms",
-            gridColumn: "span 3",
             padding: "1.5rem",
             display: "flex",
             flexDirection: "column",
@@ -330,10 +359,9 @@ export default async function AdminDashboardPage() {
 
         {/* Cell D — Average GPA (spans 4 cols, second row) */}
         <div
-          className="glass-card bento-cell"
+          className="glass-card bento-cell bento-col-4"
           style={{
             "--delay": "340ms",
-            gridColumn: "span 4",
             padding: "1.5rem 1.75rem",
             display: "flex",
             flexDirection: "column",
@@ -388,10 +416,9 @@ export default async function AdminDashboardPage() {
 
         {/* Cell E — Grade distribution (3 cols, second row) */}
         <div
-          className="glass-card bento-cell"
+          className="glass-card bento-cell bento-col-3"
           style={{
             "--delay": "400ms",
-            gridColumn: "span 3",
             padding: "1.5rem",
             display: "flex",
             flexDirection: "column",
