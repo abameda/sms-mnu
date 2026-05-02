@@ -65,7 +65,7 @@ export default function StudentGradesPage() {
             <div className="skeleton-line" style={{ width:"6rem" }} />
             <div className="skeleton-line" style={{ width:"12rem", height:"2rem" }} />
           </div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"0.875rem" }}>
+          <div className="student-stat-strip">
             {[...Array(3)].map((_, i) => <div key={i} className="skeleton" style={{ height:"7rem", borderRadius:"0.875rem", animationDelay:`${i*80}ms` }} />)}
           </div>
         </div>
@@ -76,6 +76,34 @@ export default function StudentGradesPage() {
   return (
     <>
       <div className="dashboard-glow-bg" aria-hidden="true" />
+
+      {/* Responsive stat strip styles */}
+      <style>{`
+        .student-stat-strip {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.875rem;
+        }
+        @media (max-width: 480px) {
+          .student-stat-strip {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+          }
+        }
+        @media (min-width: 481px) and (max-width: 640px) {
+          .student-stat-strip {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.625rem;
+          }
+          .student-stat-strip .bento-cell {
+            padding: 1.25rem 1rem 1rem !important;
+          }
+          .student-stat-strip .bento-cell p:nth-child(2) {
+            font-size: 2.25rem !important;
+          }
+        }
+      `}</style>
+
       <div style={{ display:"flex", flexDirection:"column", gap:"2rem", position:"relative", zIndex:1 }}>
 
         <div className="page-header" style={{ display:"flex", flexDirection:"column", gap:"0.25rem" }}>
@@ -85,7 +113,7 @@ export default function StudentGradesPage() {
         </div>
 
         {/* Stats strip */}
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"0.875rem" }}>
+        <div className="student-stat-strip">
           <div className="bento-cell" style={{ "--delay":"120ms", borderRadius:"1rem", background:"oklch(0.26 0.09 175)", padding:"1.75rem 1.75rem 1.5rem", display:"flex", flexDirection:"column", gap:"0.5rem", position:"relative", overflow:"hidden" } as React.CSSProperties}>
             <div style={{ position:"absolute", right:"-2rem", top:"-2rem", width:"9rem", height:"9rem", borderRadius:"50%", border:"2px solid oklch(0.55 0.10 175)", opacity:0.3, pointerEvents:"none" }} aria-hidden="true" />
             <p style={{ fontSize:"0.6875rem", fontWeight:700, letterSpacing:"0.09em", textTransform:"uppercase", color:"oklch(0.78 0.08 175)" }}>Cumulative GPA</p>
